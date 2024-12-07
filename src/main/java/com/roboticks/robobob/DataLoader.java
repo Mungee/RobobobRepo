@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements CommandLineRunner {
     private final QuestionRepository questionRepository;
 
-    @Autowired
     public DataLoader(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }

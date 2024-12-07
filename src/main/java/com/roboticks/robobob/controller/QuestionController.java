@@ -14,7 +14,6 @@ import javax.script.ScriptException;
 @RequestMapping("/robobob")
 public class QuestionController {
 
-    @Autowired
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
