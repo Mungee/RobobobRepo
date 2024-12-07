@@ -1,37 +1,33 @@
 package com.roboticks.robobob.service;
 
+import com.roboticks.robobob.helper.IScriptEngineManager;
 import com.roboticks.robobob.model.Question;
 import com.roboticks.robobob.repository.QuestionRepository;
 import jakarta.persistence.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Cacheable
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final IScriptEngineManager scriptEngineManager;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository, IScriptEngineManager scriptEngineManager) {
         this.questionRepository = questionRepository;
+        this.scriptEngineManager = scriptEngineManager;
     }
 
-    @Async
-    public CompletableFuture<String> getAnswerAsync(String question) throws ScriptException {
-        return CompletableFuture.completedFuture(getAnswer(question));
-    }
     public String getAnswer(String question) throws ScriptException {
         Optional<Question> basicQuestion = questionRepository.findByQuestion(question);
         if (basicQuestion.isPresent()) {
             return basicQuestion.get().getAnswer();
         } else {
-                String result = new ScriptEngineManager().getEngineByName("JavaScript").eval(question).toString();
+                String result = scriptEngineManager.getJavaScriptEngine().eval(question).toString();
                 return String.valueOf(result);
         }
     }
